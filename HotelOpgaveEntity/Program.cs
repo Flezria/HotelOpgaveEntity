@@ -11,7 +11,7 @@ namespace HotelOpgaveEntity
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("1.List all\nPlease enter your choice:");
+            Console.WriteLine("1.List all\n2.List hotels, rooms and reservations\nPlease enter your choice:");
             String choice = Console.ReadLine();
             Console.Clear();
             while (choice != "0")
@@ -21,11 +21,14 @@ namespace HotelOpgaveEntity
                     case "1":
                         ListAll();
                         break;
+                    case "2":
+                        ListHotelsAndRooms();
+                        break;
                     default:
                         Console.WriteLine("Command unknown");
                         break;
                 }
-                Console.WriteLine("1.List all\nPlease enter your choice:");
+                Console.WriteLine("1.List all\n2.List hotels, rooms and reservations\nPlease enter your choice:");
                 choice = Console.ReadLine();
                 Console.Clear();
             }
@@ -50,6 +53,30 @@ namespace HotelOpgaveEntity
                 foreach (var item in AllCustomers)
                 {
                     Console.WriteLine(item);
+                }
+
+                Console.WriteLine("\nPress any key to return..");
+                Console.ReadKey();
+                Console.Clear();
+            }
+        }
+
+        private static void ListHotelsAndRooms()
+        {
+            using(var context = new HotelContext())
+            {
+                var HotelAndRoom = context.Hotel.Include(x => x.Room);
+
+                foreach (var item in HotelAndRoom)
+                {
+                    Console.WriteLine(item);
+                    Console.WriteLine(String.Join("\n", item.Room));
+
+                    var RoomAndBooking = context.Booking.Where(x => x.Hotel_No == item.Hotel_No);
+                    foreach (var item2 in RoomAndBooking)
+                    {
+                        Console.WriteLine(item2);
+                    }
                 }
 
                 Console.WriteLine("\nPress any key to return..");
